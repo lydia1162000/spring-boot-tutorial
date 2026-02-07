@@ -15,6 +15,7 @@ import java.util.Optional;
 public class VideoController {
 
     List<Video> videos = List.of(
+
             new Video(1, "hhttps:llvideo1", 20),
             new Video(2, "hhttps:llvideo1", 20),
             new Video(3, "hhttps:llvideo1", 20)

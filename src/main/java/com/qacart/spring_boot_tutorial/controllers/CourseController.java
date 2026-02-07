@@ -15,6 +15,7 @@ import java.util.Optional;
 public class CourseController {
 
     List<Course> courses = List.of(
+
             new Course(1, "Selenium WebDriver", 30.99, 95),
             new Course(2, "Selenium WebDriver", 30.99, 95),
             new Course(3, "Selenium WebDriver", 30.99, 95)
