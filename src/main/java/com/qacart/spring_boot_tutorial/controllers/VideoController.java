@@ -4,6 +4,7 @@ import com.qacart.spring_boot_tutorial.entity.Video;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -22,11 +23,15 @@ public class VideoController {
     public List<Video> getVideos (){
         return videos;
     }
-    @GetMapping("/video/{id}")
+    @GetMapping("/videos/{id}")
     public Video getVideoById(@PathVariable int id){
         Optional<Video> result = videos.stream().filter(video->video.getId()==id).findFirst();
         if(result.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return result.get();
-
     }
+    @GetMapping("videos/search")
+    public List<Video> getVideosByURL(@RequestParam String url){
+        return videos.stream().filter(video->video.getUrl().contains(url)).toList();
+    }
+
 }
