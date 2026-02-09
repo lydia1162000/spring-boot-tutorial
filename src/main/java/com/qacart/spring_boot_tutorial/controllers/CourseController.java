@@ -8,6 +8,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 public class CourseController {
@@ -15,9 +16,9 @@ public class CourseController {
     List<Course> courses = new ArrayList<>(
             List.of(
 
-                    new Course(1, "Selenium WebDriver", 30.99, 95),
-                    new Course(2, "Selenium WebDriver", 30.99, 95),
-                    new Course(3, "Selenium WebDriver", 30.99, 95)
+                    new Course(UUID.randomUUID(), "Selenium WebDriver", 30.99, 95),
+                    new Course(UUID.randomUUID(), "Selenium WebDriver", 30.99, 95),
+                    new Course(UUID.randomUUID(), "Selenium WebDriver", 30.99, 95)
             )
     );
 
@@ -27,20 +28,31 @@ public class CourseController {
     }
 
     @GetMapping("/courses/{id}")
-    public Course getCourseById(@PathVariable int id) {
+    public Course getCourseById(@PathVariable UUID id) {
         Optional<Course> result = courses.stream().filter(course -> course.getId() == id).findFirst();
         if (result.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return result.get();
     }
+
     @GetMapping("/courses/search")
-    public  List<Course> getCoursesByTitle(@RequestParam String title){
+    public List<Course> getCoursesByTitle(@RequestParam String title) {
         return courses.stream().filter(course -> course.getTitle().contains(title)).toList();
     }
+
     @DeleteMapping("/courses/{id}")
-    public String deleteCourseById(@PathVariable int id){
-        Optional<Course> result =courses.stream().filter(course->course.getId() == id).findFirst();
-        if(result.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+    public String deleteCourseById(@PathVariable UUID id) {
+        Optional<Course> result = courses.stream().filter(course -> course.getId() == id).findFirst();
+        if (result.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         courses.remove(result.get());
         return "Deleted";
+    }
+
+    @PostMapping("/courses")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Course createCourse(@RequestBody Course course) {
+        course.setId(UUID.randomUUID());
+        courses.add(course);
+        return course;
+
     }
 }

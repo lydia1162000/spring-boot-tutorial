@@ -8,6 +8,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @RestController
 public class VideoController {
@@ -15,9 +16,9 @@ public class VideoController {
     List<Video> videos = new ArrayList<>(
             List.of(
 
-                    new Video(1, "hhttps:llvideo1", 20),
-                    new Video(2, "hhttps:llvideo1", 20),
-                    new Video(3, "hhttps:llvideo1", 20)
+                    new Video(UUID.randomUUID(), "hhttps:llvideo1", 20),
+                    new Video(UUID.randomUUID(), "hhttps:llvideo1", 20),
+                    new Video(UUID.randomUUID(), "hhttps:llvideo1", 20)
             )
     );
 
@@ -27,7 +28,7 @@ public class VideoController {
     }
 
     @GetMapping("/videos/{id}")
-    public Video getVideoById(@PathVariable int id) {
+    public Video getVideoById(@PathVariable UUID id) {
         Optional<Video> result = videos.stream().filter(video -> video.getId() == id).findFirst();
         if (result.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return result.get();
@@ -39,11 +40,18 @@ public class VideoController {
     }
 
     @DeleteMapping("/videos/{id}")
-    public String deleteVideoByURL(@PathVariable int id) {
+    public String deleteVideoByURL(@PathVariable UUID id) {
         Optional<Video> result = videos.stream().filter(video -> video.getId() == id).findFirst();
         if (result.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         videos.remove(result.get());
         return "Deleted";
     }
 
+    @PostMapping("/videos")
+    @ResponseStatus(HttpStatus.CREATED)
+    public Video createVideo(@RequestBody Video video) {
+        video.setId(UUID.randomUUID());
+        videos.add(video);
+        return video;
+    }
 }
