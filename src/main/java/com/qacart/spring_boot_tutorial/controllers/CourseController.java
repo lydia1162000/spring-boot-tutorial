@@ -29,7 +29,7 @@ public class CourseController {
 
     @GetMapping("/courses/{id}")
     public Course getCourseById(@PathVariable UUID id) {
-        Optional<Course> result = courses.stream().filter(course -> course.getId() == id).findFirst();
+        Optional<Course> result = courses.stream().filter(course -> course.getId().equals(id)).findFirst();
         if (result.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return result.get();
     }
@@ -41,7 +41,7 @@ public class CourseController {
 
     @DeleteMapping("/courses/{id}")
     public String deleteCourseById(@PathVariable UUID id) {
-        Optional<Course> result = courses.stream().filter(course -> course.getId() == id).findFirst();
+        Optional<Course> result = courses.stream().filter(course -> course.getId().equals(id)).findFirst();
         if (result.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         courses.remove(result.get());
         return "Deleted";
@@ -54,5 +54,16 @@ public class CourseController {
         courses.add(course);
         return course;
 
+    }
+
+    @PutMapping("courses/{id}")
+    public Course editeCourseById(@PathVariable UUID id, @RequestBody Course course) {
+        Optional<Course> result = courses.stream().filter(c -> c.getId().equals(id)).findFirst();
+        if (result.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        Course oldCourse = result.get();
+        oldCourse.setTitle(course.getTitle());
+        oldCourse.setPrice(course.getPrice());
+        oldCourse.setNumOfVideos(course.getNumOfVideos());
+        return oldCourse;
     }
 }

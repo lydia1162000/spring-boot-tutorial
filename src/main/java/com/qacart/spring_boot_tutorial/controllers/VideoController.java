@@ -29,7 +29,7 @@ public class VideoController {
 
     @GetMapping("/videos/{id}")
     public Video getVideoById(@PathVariable UUID id) {
-        Optional<Video> result = videos.stream().filter(video -> video.getId() == id).findFirst();
+        Optional<Video> result = videos.stream().filter(video -> video.getId().equals(id)).findFirst();
         if (result.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         return result.get();
     }
@@ -41,7 +41,7 @@ public class VideoController {
 
     @DeleteMapping("/videos/{id}")
     public String deleteVideoByURL(@PathVariable UUID id) {
-        Optional<Video> result = videos.stream().filter(video -> video.getId() == id).findFirst();
+        Optional<Video> result = videos.stream().filter(video -> video.getId().equals(id)).findFirst();
         if (result.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
         videos.remove(result.get());
         return "Deleted";
@@ -53,5 +53,14 @@ public class VideoController {
         video.setId(UUID.randomUUID());
         videos.add(video);
         return video;
+    }
+    @PutMapping("/videos/{id}")
+    public  Video editVideoByID(@PathVariable UUID id, @RequestBody Video video){
+        Optional<Video> result = videos.stream().filter(v -> v.getId().equals(id)).findFirst();
+        if (result.isEmpty()) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        Video oldVideo = result.get();
+        oldVideo.setUrl(video.getUrl());
+        oldVideo.setDuration(video.getDuration());
+        return oldVideo;
     }
 }
