@@ -13,6 +13,7 @@ import java.util.UUID;
 @RestController
 public class CourseController {
 
+    private final String API_KEY_VALUE="QAcart";
     List<Course> courses = new ArrayList<>(
             List.of(
 
@@ -23,7 +24,9 @@ public class CourseController {
     );
 
     @GetMapping("/courses")
-    public List<Course> getCourses() {
+    public List<Course> getCourses(@RequestHeader (required = false) String API_KEY) {
+        if(API_KEY == null) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        if(!API_KEY.equals(API_KEY_VALUE)) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         return courses;
     }
 

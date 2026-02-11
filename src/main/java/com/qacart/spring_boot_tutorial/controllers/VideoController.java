@@ -13,6 +13,7 @@ import java.util.UUID;
 @RestController
 public class VideoController {
 
+    private final String API_KEY_VALUE = "QAcart";
     List<Video> videos = new ArrayList<>(
             List.of(
 
@@ -23,7 +24,9 @@ public class VideoController {
     );
 
     @GetMapping("/videos")
-    public List<Video> getVideos() {
+    public List<Video> getVideos(@RequestHeader (required = false) String API_KEY) {
+        if(API_KEY == null) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        if(!API_KEY.equals(API_KEY_VALUE)) throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         return videos;
     }
 
